@@ -1,9 +1,2 @@
 # Test
-First Time Testing GitHub
-
-
-Maybe I should mess with this less.
-
-Eh, who am I kidding.
-
-I also added a sql file
+Coming a long way from 6 years ago. hello world
