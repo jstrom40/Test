@@ -1,0 +1,46 @@
+name: "MR pipeline for 'main'"
+run-name: ${{ github.actor }} created MR
+
+on:
+  # run if pull_request is targeting 'main'
+  pull_request:
+    types: [closed]
+    branches:    
+        - main
+
+jobs:
+  stg:
+    runs-on: ubuntu-latest
+    environment: stg
+    if: ${{ github.event.pull_request.merged == true }}
+
+    steps:
+        - uses: actions/checkout@v3
+        - run: |
+            echo "Deploying to staging environment..."
+            git checkout main
+            git pull
+            git checkout stg
+            git pull
+            git rebase main
+            git push origin stg
+            echo "Deployment to staging completed successfully."
+  
+  prod:
+    runs-on: ubuntu-latest
+    environment: prod
+    if: ${{ github.event.pull_request.merged == true }}
+    needs: stg
+
+    steps:
+        - uses: actions/checkout@v3
+        - run: |
+            echo "Deploying to production environment..."
+            git checkout stg
+            git pull
+            git checkout prod
+            git pull
+            git rebase stg
+            git push origin prod
+            echo "Deployment to production completed successfully."
+
