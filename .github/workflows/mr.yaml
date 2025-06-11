@@ -23,7 +23,7 @@ jobs:
             git checkout stg
             git pull
             git rebase main
-            git push origin stg
+            git push origin stg --force
             echo "Deployment to staging completed successfully."
   
   prod:
@@ -41,6 +41,6 @@ jobs:
             git checkout prod
             git pull
             git rebase stg
-            git push origin prod
+            git push origin prod --force
             echo "Deployment to production completed successfully."
 
