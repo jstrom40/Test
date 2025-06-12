@@ -15,15 +15,17 @@ jobs:
     if: ${{ github.event.pull_request.merged == true }}
 
     steps:
-        - uses: actions/checkout@v3
+        - name: Checkout Branch
+          uses: actions/checkout@v3
+          with:
+            ref: main
         - run: |
             echo "Deploying to staging environment..."
-            git checkout main
-            git pull
+            echo "Step 1: Rebase Staging Branch with Main"
             git checkout stg
-            git pull
-            git rebase main
-            git push origin stg --force
+            git merge main
+            echo "Step 2: Push Staging Branch"
+            git push
             echo "Deployment to staging completed successfully."
   
   prod:
