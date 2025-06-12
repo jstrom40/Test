@@ -19,7 +19,13 @@ jobs:
           uses: actions/checkout@v3
           with:
             ref: main
-        - run: |
+            token: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Fetch all branches (including stg)
+          run: git fetch origin stg
+        
+        - name: Deploy to Staging
+          run: |
             echo "Deploying to staging environment..."
             echo "Step 1: Rebase Staging Branch with Main"
             git checkout stg
