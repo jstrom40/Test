@@ -18,13 +18,14 @@ jobs:
         - name: Checkout Branch
           uses: actions/checkout@v3
           with:
-            ref: stg
+            ref: main
         - run: |
             echo "Deploying to staging environment..."
             echo "Step 1: Rebase Staging Branch with Main"
-            git rebase main
+            git checkout stg
+            git merge main
             echo "Step 2: Push Staging Branch"
-            git push origin stg --force
+            git push
             echo "Deployment to staging completed successfully."
   
   prod:
