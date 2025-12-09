@@ -34,7 +34,7 @@ jobs:
             echo "Deploying to staging environment..."
             echo "Step 1: Rebase Staging Branch with Main"
             git checkout stg
-            git merge main --allow-unrelated-histories
+            git merge main
             echo "Step 2: Push Staging Branch"
             git push
             echo "Deployment to staging completed successfully."
@@ -54,6 +54,11 @@ jobs:
 
         - name: Fetch all branches (including stg)
           run: git fetch origin uat
+
+        - name: Set Git User Identity
+          run: |
+            git config --global user.email "josh.stromgren@gmail.com"
+            git config --global user.name "jstrom40"
         
         - name: Deploy to Staging
           run: |
@@ -81,6 +86,11 @@ jobs:
       
       - name: Fetch all branches (including prod)
         run: git fetch origin prod
+      
+      - name: Set Git User Identity
+        run: |
+          git config --global user.email "josh.stromgren@gmail.com"
+          git config --global user.name "jstrom40"
       
       - name: Deploy to Production
         run: |
