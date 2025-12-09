@@ -23,6 +23,11 @@ jobs:
 
         - name: Fetch all branches (including stg)
           run: git fetch origin stg
+
+        - name: Set Git User Identity
+          run: |
+            git config --global user.email "josh.stromgren@gmail.com"
+            git config --global user.name "jstrom40"
         
         - name: Deploy to Staging
           run: |
