@@ -38,6 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: uat
     if: ${{ github.event.pull_request.merged == true }}
+    needs: stg
 
     steps:
         - name: Checkout Branch
