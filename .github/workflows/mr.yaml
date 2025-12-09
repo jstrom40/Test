@@ -51,6 +51,7 @@ jobs:
           with:
             ref: stg
             token: ${{ secrets.GITHUB_TOKEN }}
+            fetch-depth: 0
 
         - name: Fetch all branches (including stg)
           run: git fetch origin uat
