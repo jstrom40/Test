@@ -29,7 +29,7 @@ jobs:
             echo "Deploying to staging environment..."
             echo "Step 1: Rebase Staging Branch with Main"
             git checkout stg
-            git merge main
+            git merge main --allow-unrelated-histories
             echo "Step 2: Push Staging Branch"
             git push
             echo "Deployment to staging completed successfully."
@@ -55,7 +55,7 @@ jobs:
             echo "Deploying to staging environment..."
             echo "Step 1: Rebase Staging Branch with Main"
             git checkout uat
-            git merge stg
+            git merge stg --allow-unrelated-histories
             echo "Step 2: Push Staging Branch"
             git push
             echo "Deployment to staging completed successfully."
@@ -81,7 +81,7 @@ jobs:
         run: |
           echo "Deploying to production branch..."
           git checkout prod
-          git merge uat
+          git merge uat --allow-unrelated-histories
           git push
           echo "Deployment to production completed successfully."
 
