@@ -1,0 +1,59 @@
+name: "Manual Production Deployment"
+run-name: ${{ github.actor }} triggered production deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type "deploy" to confirm production deployment'
+        required: true
+        type: string
+
+jobs:
+  validate-user:
+    runs-on: ubuntu-latest
+    outputs:
+      is-authorized: ${{ steps.check-user.outputs.authorized }}
+    steps:
+      - name: Check if user is authorized
+        id: check-user
+        run: |
+          # List of authorized users (update with actual GitHub usernames)
+          AUTHORIZED_USERS=("jstrom40")
+          
+          CURRENT_USER="${{ github.actor }}"
+          
+          if [[ " ${AUTHORIZED_USERS[@]} " =~ " ${CURRENT_USER} " ]]; then
+            echo "authorized=true" >> $GITHUB_OUTPUT
+            echo "User $CURRENT_USER is authorized for production deployments"
+          else
+            echo "authorized=false" >> $GITHUB_OUTPUT
+            echo "User $CURRENT_USER is NOT authorized for production deployments"
+            exit 1
+          fi
+
+  prod:
+    runs-on: ubuntu-latest
+    environment: prod
+    needs: validate-user
+    if: ${{ needs.validate-user.outputs.is-authorized == 'true' && github.event.inputs.confirmation == 'deploy' }}
+
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+        with:
+          ref: uat
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      
+      - name: Fetch all branches (including prod)
+        run: git fetch origin prod
+      
+      - name: Deploy to Production
+        run: |
+          echo "Deploying to production branch..."
+          git checkout prod
+          git merge uat
+          git push
+          echo "Deployment to production completed successfully."
+
