@@ -24,19 +24,12 @@ jobs:
 
         - name: Fetch all branches (including stg)
           run: git fetch origin stg
-
-        - name: Set Git User Identity
-          run: |
-            git config --global user.email "josh.stromgren@gmail.com"
-            git config --global user.name "jstrom40"
         
         - name: Deploy to Staging
           run: |
-            echo "Deploying to staging environment..."
-            echo "Step 1: Rebase Staging Branch with Main"
+            echo "Deploying to staging branch..."
             git checkout stg
-            git merge main --allow-unrelated-histories
-            echo "Step 2: Push Staging Branch"
+            git merge main
             git push
             echo "Deployment to staging completed successfully."
 
@@ -52,42 +45,15 @@ jobs:
           with:
             ref: stg
             token: ${{ secrets.GITHUB_TOKEN }}
+            fetch-depth: 0
 
         - name: Fetch all branches (including stg)
           run: git fetch origin uat
         
-        - name: Deploy to Staging
+        - name: Deploy to UAT
           run: |
-            echo "Deploying to staging environment..."
-            echo "Step 1: Rebase Staging Branch with Main"
+            echo "Deploying to UAT branch..."
             git checkout uat
-            git merge stg --allow-unrelated-histories
-            echo "Step 2: Push Staging Branch"
+            git merge stg
             git push
-            echo "Deployment to staging completed successfully."
-  
-  prod:
-    runs-on: ubuntu-latest
-    environment: prod
-    if: ${{ github.event.pull_request.merged == true }}
-    needs: uat
-    
-    steps:
-      - name: Checkout Branch
-        uses: actions/checkout@v3
-        with:
-          ref: uat
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-      
-      - name: Fetch all branches (including prod)
-        run: git fetch origin prod
-      
-      - name: Deploy to Production
-        run: |
-          echo "Deploying to production branch..."
-          git checkout prod
-          git merge uat --allow-unrelated-histories
-          git push
-          echo "Deployment to production completed successfully."
-
+            echo "Deployment to UAT completed successfully."
